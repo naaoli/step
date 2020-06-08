@@ -16,7 +16,7 @@
  * Adds "Hello Naa'Oli!" to the page.
  */
 function getHelloName() {
-
-  const helloNameContainer = document.getElementById('container');
-  helloNameContainer.innerText = "Hello Naa'Oli!";
+  fetch('/data').then(response => response.json()).then((message) => {
+    document.getElementById('container').innerText = message;
+  });
 }
