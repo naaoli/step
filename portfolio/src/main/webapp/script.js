@@ -13,10 +13,18 @@
 // limitations under the License.
 
 /**
- * Adds "Hello Naa'Oli!" to the page.
+ * Adds greetings to the page.
  */
 function getHelloName() {
   fetch('/data').then(response => response.json()).then((message) => {
     document.getElementById('container').innerText = message;
   });
+}
+
+async function getHelloNameAsync() {
+  const response = await fetch('/data');
+    console.log(response);
+  const json = await response.json();
+  console.log(json);
+  document.getElementById('container').innerText = json;
 }
