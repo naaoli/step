@@ -23,20 +23,27 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
+
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
     // Initialize the message list with harcoded messages
+
     JSONArray messageList = new JSONArray();
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    messageList.clear();
-    messageList.add("Hello Naa'Oli!"); 
-    messageList.add("How are you doing Naa'Oli?");
-    messageList.add("Good to see you again Naa'Oli.");
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        
+        // Sets the JSON array to the three hard messages
 
-    response.setContentType("text/html;");
-    response.getWriter().println(messageList.toString());
-  }
+        messageList.clear();
+        messageList.add("Hello Naa'Oli!"); 
+        messageList.add("How are you doing Naa'Oli?");
+        messageList.add("Good to see you again Naa'Oli.");
+
+        // Sends the JSON array to the /data servlet
+        
+        response.setContentType("text/html;");
+        response.getWriter().println(messageList.toString());
+    }
 }
