@@ -15,11 +15,12 @@
 package com.google.sps.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import org.json.simple.JSONArray;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
@@ -42,8 +43,26 @@ public class DataServlet extends HttpServlet {
         messageList.add("Good to see you again Naa'Oli.");
 
         // Sends the JSON array to the /data servlet
-        
+
         response.setContentType("text/html;");
         response.getWriter().println(messageList.toString());
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Get Input from the Form
+        String preproccessedText = request.getParameter("user-input");
+
+        // Split String into a List
+        String[] greetings = preproccessedText.split("\\s*,\\s*");
+
+        // Places the greetings in the JSON Array
+        messageList.clear();
+        for(String str: greetings) {
+            messageList.add(str);
+        }
+        response.setContentType("text/html;");
+        response.getWriter().println(messageList.toString());
+        response.sendRedirect("/index.html");
     }
 }
