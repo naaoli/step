@@ -27,14 +27,12 @@ import org.json.simple.JSONArray;
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
     // Initialize the message list with harcoded messages
 
     JSONArray messageList = new JSONArray();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         // Sets the JSON array to the three hard messages
 
         messageList.clear();
@@ -53,16 +51,15 @@ public class DataServlet extends HttpServlet {
         // Get Input from the Form
         String preproccessedText = request.getParameter("user-input");
 
-        // Split String into a List
+        // Split String into a List, "\\s*,\\s*" is a regular expression that omits whitespace near the commas
         String[] greetings = preproccessedText.split("\\s*,\\s*");
 
         // Places the greetings in the JSON Array
         messageList.clear();
-        for(String str: greetings) {
+        for(String str : greetings) {
             messageList.add(str);
         }
         response.setContentType("text/html;");
         response.getWriter().println(messageList.toString());
-        response.sendRedirect("/index.html");
     }
 }
