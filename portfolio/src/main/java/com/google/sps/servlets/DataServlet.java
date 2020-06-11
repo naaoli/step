@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 package com.google.sps.servlets;
 
 import java.io.IOException;
@@ -27,21 +26,17 @@ import org.json.simple.JSONArray;
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    // Initialize the message list with harcoded messages
-
     JSONArray messageList = new JSONArray();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Sets the JSON array to the three hard messages
-
         messageList.clear();
         messageList.add("Hello Naa'Oli!"); 
         messageList.add("How are you doing Naa'Oli?");
         messageList.add("Good to see you again Naa'Oli.");
 
         // Sends the JSON array to the /data servlet
-
         response.setContentType("text/html;");
         response.getWriter().println(messageList.toString());
     }
@@ -53,13 +48,13 @@ public class DataServlet extends HttpServlet {
 
         // Split String into a List, "\\s*,\\s*" is a regular expression that omits whitespace near the commas
         String[] greetings = preproccessedText.split("\\s*,\\s*");
-
+    
         // Places the greetings in the JSON Array
         messageList.clear();
-        for(String str : greetings) {
-            messageList.add(str);
+        for(int i = 0; i < greetings.length; i++) {
+            messageList.add(greetings[i]);
         }
-        response.setContentType("text/html;");
+        response.setContentType("application/json;");
         response.getWriter().println(messageList.toString());
     }
 }
