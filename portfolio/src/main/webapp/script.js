@@ -20,3 +20,18 @@ async function getHelloName() {
   const json = await response.json();
   document.getElementById('container').innerText = json;
 }
+
+async function getComments() {
+    const response = await fetch('/data');
+    const json = await response.json();
+    const commentContainer = document.getElementById('container');
+}
+
+document.getElementById('comment-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const response = await fetch('/data', {
+    method: 'POST'
+  });
+  const json = await response.json();
+  document.getElementById('comment-container').innerText = json;
+});
