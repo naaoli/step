@@ -19,13 +19,12 @@ async function getHelloName() {
   const response = await fetch('/data');
   const json = await response.json();
   document.getElementById('container').innerText = json;
-}
-
-document.getElementById('comment-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const response = await fetch('/data', {
-    method: 'POST'
+  document.getElementById('comment-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const response = await fetch('/data', {
+      method: 'POST'
+    });
+    const json = await response.json();
+    document.getElementById('comment-container').innerText = json;
   });
-  const json = await response.json();
-  document.getElementById('comment-container').innerText = json;
-});
+}

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package com.google.sps.servlets;
 
 import java.io.IOException;
@@ -26,35 +27,39 @@ import org.json.simple.JSONArray;
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    JSONArray messageList = new JSONArray();
+  JSONArray messageList = new JSONArray();
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Sets the JSON array to the three hard messages
+    messageList.clear();
+    messageList.add("Hello Naa'Oli!"); 
+    messageList.add("How are you doing Naa'Oli?");
+    messageList.add("Good to see you again Naa'Oli.");
+
+    // Sends the JSON array to the /data servlet
+    response.setContentType("text/html;");
+    response.getWriter().println(messageList.toString());
+  }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Sets the JSON array to the three hard messages
-        messageList.clear();
-        messageList.add("Hello Naa'Oli!"); 
-        messageList.add("How are you doing Naa'Oli?");
-        messageList.add("Good to see you again Naa'Oli.");
-
-        // Sends the JSON array to the /data servlet
-        response.setContentType("text/html;");
-        response.getWriter().println(messageList.toString());
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get Input from the Form
+    String preproccessedText = request.getParameter("user-input");
+    if(preproccessedText == null) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
     }
 
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Get Input from the Form
-        String preproccessedText = request.getParameter("user-input");
-
-        // Split String into a List, "\\s*,\\s*" is a regular expression that omits whitespace near the commas
-        String[] greetings = preproccessedText.split("\\s*,\\s*");
+    // Split String into a List, "\\s*,\\s*" is a regular expression that omits whitespace near the commas
+    String[] greetings = preproccessedText.split("\\s*,\\s*");
     
-        // Places the greetings in the JSON Array
-        messageList.clear();
-        for(int i = 0; i < greetings.length; i++) {
-            messageList.add(greetings[i]);
-        }
-        response.setContentType("application/json;");
-        response.getWriter().println(messageList.toString());
+    // Places the greetings in the JSON Array
+    messageList.clear();
+    for(int i = 0; i < greetings.length; i++) {
+      messageList.add(greetings[i]);
     }
+    response.setContentType("application/json;");
+    response.getWriter().println(messageList.toString());
+  }
 }
