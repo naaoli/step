@@ -42,7 +42,7 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(messageList.toString());
   }
 
-    @Override
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get Input from the Form
     String preproccessedText = request.getParameter("user-input");
