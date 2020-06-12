@@ -13,10 +13,18 @@
 // limitations under the License.
 
 /**
- * Adds "Hello Naa'Oli!" to the page.
+ * Adds Comments to the page.
  */
-function getHelloName() {
-
-  const helloNameContainer = document.getElementById('container');
-  helloNameContainer.innerText = "Hello Naa'Oli!";
+async function load() {
+  const response = await fetch('/data');
+  const json = await response.json();
+  document.getElementById('container').innerText = json;
+  document.getElementById('comment-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const response = await fetch('/data', {
+      method: 'POST'
+    });
+    const json = await response.json();
+    document.getElementById('comment-container').innerText = json;
+  });
 }

@@ -1,39 +1,64 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+      <meta charset="UTF-8">
+      <title>My Portfolio</title>
+      <link rel="stylesheet" href="style.css">
   </head>
-  <body>
-      <h1>My Portfolio</h1>
-      <h2>About Me</h2>
-      <p>
-          I am a rising second year Computer Science Major at the University of Maryland College Park. I don't have a strong background in CS as the 
-          Google STEP internship is my first professional work experience working with Computer Science; however, Computer Science, for the most part, 
-          comes pretty natural to me. As for my personal background, I am of the Oromo ethnic group, where most of its population resides in Ethiopia, including
-          my parents at one point, but they immigrated here in 1999. I am also Muslim, a practicer of the second most practiced religion in the world.
-      </p>
+  <body onload="getHelloName()">
+    <h1>My Portfolio</h1>
+    <h2>About Me</h2>
+    <p>
+      I am a rising second year Computer Science Major at the University of Maryland College Park. I don't have a strong background in CS as the 
+      Google STEP internship is my first professional work experience working with Computer Science; however, Computer Science, for the most part, 
+      comes pretty natural to me. As for my personal background, I am of the Oromo ethnic group, where most of its population resides in Ethiopia, including
+      my parents at one point, but they immigrated here in 1999. I am also Muslim, a practicer of the second most practiced religion in the world.
+    </p>
 
-      <h2>Programming Languages and Level of Experience</h2>
-      <ul>
-          <li>Java: Pretty adept, multiple years in school using Java</li>
-          <li>C: Intermediate, spent one semester at UMD using it</li>
-          <li>JavaScript: Novice, quickly brushed over it in school</li>
-          <li>HTML: Intermediate, learned the basics of HTML but never really applied it to a project</li>
-      </ul>
+    <h2>Programming Languages and Level of Experience</h2>
+    <ul>
+      <li>Java: Pretty adept, multiple years in school using Java</li>
+      <li>C: Intermediate, spent one semester at UMD using it</li>
+      <li>JavaScript: Novice, quickly brushed over it in school</li>
+      <li>HTML: Intermediate, learned the basics of HTML but never really applied it to a project</li>
+    </ul>
 
-      <h2>Images of Me</h2>
-      <img src="/images/IMG_3791.JPG" alt="Picture of me" style="width:720px;height:480px;">
-      <img src="/images/IMG_5564.JPG" alt="Another picture of me, in CityCenterDC" style="width:720px;height:480px;">
+    <h2>Images of Me</h2>
+    <img src="/images/IMG_3791.JPG" alt="Picture of me" style="width:720px;height:480px;">
+    <img src="/images/IMG_5564.JPG" alt="Another picture of me, in CityCenterDC" style="width:720px;height:480px;">
+
+    <br/><br/>
+
+    <button onclick="load()">Press to greet me!</button>
+
+    <br/>
+
+    <div id="container"></div>
+
+    <br/>
 
 
-      <button onclick="getHelloName()">Press to greet me!</button>
-      <div id="container"></div>
+    <h2>Comments</h2>
+    <div id="comments-section">
+      <form action="/data" method="POST" id="comment-form">
+        <p>Comment Section, separate each comment with a comma</p>
+        <label for="user-input">Type comments in here</label>
+        <input type="text" id="user-input" name="user-input"><br><br>
+        <input type="submit" id="submit"/>
+      </form>
 
-      <h2>Links</h2>
-      <a href="https://github.com/naaoli">GitHub</a>
-      <a href="https://www.linkedin.com/in/naa-oli-mamie-1391b0156">LinkedIn</a>
+      <br/>
+
+      <div id="comment-container"></div>
+
+    </div>
+
+    <br/><br/>
+
+    <h2>Links</h2>
+    <a href="https://github.com/naaoli">GitHub</a>
+    <a href="https://www.linkedin.com/in/naa-oli-mamie-1391b0156">LinkedIn</a>
+        
+    <script src="script.js"></script>
   </body>
 </html>
