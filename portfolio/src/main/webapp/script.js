@@ -13,9 +13,9 @@
 // limitations under the License.
 
 /**
- * Adds greetings to the page.
+ * Adds Comments to the page.
  */
-async function getHelloName() {
+async function load() {
   const response = await fetch('/data');
   const json = await response.json();
   document.getElementById('container').innerText = json;
