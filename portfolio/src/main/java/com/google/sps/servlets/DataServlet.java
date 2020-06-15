@@ -14,6 +14,12 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,23 +28,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
-
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   JSONArray messageList = new JSONArray();
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Sets the JSON array to the three hard messages
-    messageList.clear();
-    messageList.add("Hello Naa'Oli!"); 
-    messageList.add("How are you doing Naa'Oli?");
-    messageList.add("Good to see you again Naa'Oli.");
+    Query query = new Query("Task").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
 
-    // Sends the JSON array to the /data servlet
-    response.setContentType("text/html;");
+    messageList.clear();
+
+    for(Entity entity : results.asIterable()) {
+      messageList.add((String)entity.getProperty("Comment"));
+    }
+
+    response.setContentType("application/json;");
     response.getWriter().println(messageList.toString());
   }
 
@@ -46,19 +54,29 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get Input from the Form
     String preproccessedText = request.getParameter("user-input");
-    if(preproccessedText == null) {
+
+    if(request == null) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return;
+    }
+    if(preproccessedText == null) {
+      preproccessedText = "default comment";
     }
 
     // Split String into a List, "\\s*,\\s*" is a regular expression that omits whitespace near the commas
     String[] greetings = preproccessedText.split("\\s*,\\s*");
     
     // Places the greetings in the JSON Array
+    Entity commentEntity;
     messageList.clear();
-    for(int i = 0; i < greetings.length; i++) {
-      messageList.add(greetings[i]);
+    for(String str : greetings) {
+      commentEntity = new Entity("Comment");
+      commentEntity.setProperty("Comment", str);
+      datastore.put(commentEntity);
+      messageList.add(str);
     }
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
     response.setContentType("application/json;");
     response.getWriter().println(messageList.toString());
   }
