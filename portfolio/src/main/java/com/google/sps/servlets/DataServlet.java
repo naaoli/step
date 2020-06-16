@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
+
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 
 @WebServlet("/data")
@@ -42,7 +43,7 @@ public class DataServlet extends HttpServlet {
 
     messageList.clear();
 
-    for(Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable()) {
       messageList.add((String)entity.getProperty("Comment"));
     }
 
@@ -55,10 +56,12 @@ public class DataServlet extends HttpServlet {
     // Get Input from the Form
     String preproccessedText = request.getParameter("user-input");
 
-    if(request == null) {
+    if (request == null) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
-    if(preproccessedText == null) {
+
+
+    if (preproccessedText == null) {
       preproccessedText = "default comment";
     }
 
@@ -68,7 +71,7 @@ public class DataServlet extends HttpServlet {
     // Places the greetings in the JSON Array
     Entity commentEntity;
     messageList.clear();
-    for(String str : greetings) {
+    for (String str : greetings) {
       commentEntity = new Entity("Comment");
       commentEntity.setProperty("Comment", str);
       datastore.put(commentEntity);
