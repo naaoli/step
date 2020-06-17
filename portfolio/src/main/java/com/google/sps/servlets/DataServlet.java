@@ -77,8 +77,6 @@ public class DataServlet extends HttpServlet {
       datastore.put(commentEntity);
       messageList.add(str);
     }
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     response.setContentType("application/json;");
     response.getWriter().println(messageList.toString());
