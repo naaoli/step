@@ -24,8 +24,6 @@ async function load() {
 
     const json = await response.json();
     document.getElementById('comment-container').innerText = json;
-
-    console.log(json);
   });
 
   const response = await fetch('/data');
