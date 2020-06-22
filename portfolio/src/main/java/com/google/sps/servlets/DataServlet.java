@@ -55,7 +55,11 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get Input from the Form
     String preproccessedText = request.getParameter("user-input");
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 4ddd141a8defa814f03b8132f6abf337cdbb1ef2
     if (preproccessedText == null) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;

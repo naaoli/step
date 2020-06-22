@@ -93,4 +93,9 @@ public final class Event {
     // interface documentation, equals will check for set-equality across all set implementations.
     return a.title.equals(b.title) && a.when.equals(b.when) && a.attendees.equals(b.attendees);
   }
+
+  @Override
+  public String toString() {
+    return "Attendees: " + attendees.toString() + "\nTime Range: " + when.toString();      
+  }
 }
