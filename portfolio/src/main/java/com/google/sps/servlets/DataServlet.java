@@ -55,14 +55,10 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get Input from the Form
     String preproccessedText = request.getParameter("user-input");
-
-    if (request == null) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    }
-
-
+    
     if (preproccessedText == null) {
-      preproccessedText = "default comment";
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
     }
 
     // Split String into a List, "\\s*,\\s*" is a regular expression that omits whitespace near the commas
