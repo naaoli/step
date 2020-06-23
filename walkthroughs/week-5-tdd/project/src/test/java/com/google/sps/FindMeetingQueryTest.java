@@ -272,5 +272,143 @@ public final class FindMeetingQueryTest {
 
     Assert.assertEquals(expected, actual);
   }
+  @Test	
+  public void optionalAttendeeNotConsidered() {	
+    // Have the same test as everyAttendeeIsConsidered() except add an optional attendee C	
+    // who is busy all day.	
+    // Events  : |--------------C--------------|	
+    // Events  :       |--A--|     |--B--|	
+    // Day     : |-----------------------------|	
+    // Options : |--1--|     |--2--|     |--3--|	
+
+    String personC = "Person C";	
+    Collection<Event> events = Arrays.asList(	
+        new Event("Event 1", TimeRange.WHOLE_DAY, Arrays.asList(PERSON_C)),	
+        new Event("Event 2", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),	
+            Arrays.asList(PERSON_A)),	
+        new Event("Event 3", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),	
+            Arrays.asList(PERSON_B)));	
+
+    MeetingRequest request =	
+        new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), DURATION_30_MINUTES);	
+
+    request.addOptionalAttendee(PERSON_C);	
+    Collection<TimeRange> actual = query.query(events, request);	
+    Collection<TimeRange> expected =	
+        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),	
+            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, false),	
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, true));	
+
+    Assert.assertEquals(expected, actual);	
+  }	
+
+  @Test	
+  public void everyAttendeeAndOptionalAttendeeIsConsidered() {	
+    // Have the same test as everyAttendeeIsConsidered() except add an optional attendee C	
+    // who is busy for one of the open slots.	
+    // Events  :       |--A--|--C--|--B--|	
+    // Day     : |-----------------------------|	
+    // Options : |--1--|                 |--2--|	
+    Collection<Event> events = Arrays.asList(	
+        new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),	
+            Arrays.asList(PERSON_A)),	
+        new Event("Event 2", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES), 	
+            Arrays.asList(PERSON_C)),	
+        new Event("Event 3", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),	
+            Arrays.asList(PERSON_B)));	
+
+    MeetingRequest request =	
+        new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), DURATION_30_MINUTES);	
+
+    request.addOptionalAttendee(PERSON_C);	
+
+    Collection<TimeRange> actual = query.query(events, request);	
+    Collection<TimeRange> expected =	
+        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),	
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, true));	
+
+    Assert.assertEquals(expected, actual);	
+  }	
+
+  @Test	
+  public void notEnoughRoomForOptionalAttendee() {	
+    // Have one person, but make it so that there is just enough room at one point in the day to	
+    // have the meeting. However, an optional attendee has a conflict with the meeting.	
+    //	
+    // Events  : |--A--|-B|  |----A----|	
+    // Day     : |---------------------|	
+    // Options :       |-----|	
+
+    Collection<Event> events = Arrays.asList(	
+        new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),	
+            Arrays.asList(PERSON_A)),	
+        new Event("Event 2", TimeRange.fromStartEnd(TIME_0830AM, TIME_0845AM, false),	
+            Arrays.asList(PERSON_B)),	
+        new Event("Event 3", TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, true),	
+            Arrays.asList(PERSON_A)));	
+
+    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_30_MINUTES);	
+
+    request.addOptionalAttendee(PERSON_B);	
+
+    Collection<TimeRange> actual = query.query(events, request);	
+    Collection<TimeRange> expected =	
+        Arrays.asList(TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES));	
+
+    Assert.assertEquals(expected, actual);	
+  }	
+
+  @Test	
+  public void optionalAttendeesCanMakeIt() {	
+    // Have two optional attendees that have several gaps in their schedules to meet.	
+    //	
+    // Events  : |-A-|      |-B-|	
+    // Day     : |---------------------|	
+    // Options :     |------|    |-----|	
+
+    Collection<Event> events = Arrays.asList(	
+        new Event("Event 1", TimeRange.fromStartEnd(TIME_0800AM, TIME_0845AM, false),	
+            Arrays.asList(PERSON_A)),	
+        new Event("Event 2", TimeRange.fromStartEnd(TIME_1000AM, TIME_1100AM, false),	
+            Arrays.asList(PERSON_B)));	
+
+    MeetingRequest request = new MeetingRequest(NO_ATTENDEES, DURATION_30_MINUTES);	
+
+    request.addOptionalAttendee(PERSON_A);	
+    request.addOptionalAttendee(PERSON_B);	
+
+    Collection<TimeRange> actual = query.query(events, request);	
+    Collection<TimeRange> expected = 	
+        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),	
+            TimeRange.fromStartEnd(TIME_0845AM, TIME_1000AM, false), 	
+            TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true)); 	
+
+    Assert.assertEquals(expected, actual);	
+  }	
+
+  @Test	
+  public void optionalAttendeesCannotMakeIt() {	
+    // Have two optional attendees with no gaps in their schedules to meet	
+    //	
+    // Events  : |----A----|-----B-----|	
+    // Day     : |---------------------|	
+    // Options :   	
+
+    Collection<Event> events = Arrays.asList(	
+        new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_1000AM, false),	
+            Arrays.asList(PERSON_A)),	
+        new Event("Event 2", TimeRange.fromStartEnd(TIME_1000AM, TimeRange.END_OF_DAY, false),	
+            Arrays.asList(PERSON_B)));	
+
+    MeetingRequest request = new MeetingRequest(NO_ATTENDEES, DURATION_30_MINUTES);	
+
+    request.addOptionalAttendee(PERSON_A);	
+    request.addOptionalAttendee(PERSON_B);	
+
+    Collection<TimeRange> actual = query.query(events, request);	
+    Collection<TimeRange> expected = Arrays.asList(); 	
+
+    Assert.assertEquals(expected, actual); 	
+  }
 }
 
