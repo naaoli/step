@@ -21,6 +21,7 @@ import java.util.List;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+    // If there are no optional attendees, then we don't need to take them into account
     if(request.getOptionalAttendees().size() == 0) {
         return getOpenSlots(events, request);	
     }	
@@ -28,12 +29,12 @@ public final class FindMeetingQuery {
     Collection<String> allAttendees = new ArrayList<String>();	
     allAttendees.addAll(request.getAttendees());	
     allAttendees.addAll(request.getOptionalAttendees());	
-    MeetingRequest allAttendeesRequest = new MeetingRequest(allAttendees, request.getDuration());	
-    Collection<TimeRange> openSlotsForMandatoryAttendees = getOpenSlots(events, request);	
     Collection<TimeRange> openSlotsForAllAttendees = getOpenSlots(events, new MeetingRequest(allAttendees, request.getDuration()));	
 
+    // If there are no open slots with optional attendees accounted for and there are mandatory attendees, then return only the
+    // open slots for mandatory attendees
     if(openSlotsForAllAttendees.size() == 0 && request.getAttendees().size() > 0) {	
-      return openSlotsForMandatoryAttendees;	
+      return getOpenSlots(events, request);	
     } else {	
       return openSlotsForAllAttendees;	
     }	
@@ -43,6 +44,9 @@ public final class FindMeetingQuery {
     List<TimeRange> openSlots = new ArrayList<TimeRange>();	
     int startTime = TimeRange.START_OF_DAY;	
     int endTime = TimeRange.START_OF_DAY;	
+
+    // If the requested meeting is longer than a day long, then there are no open slots for it
+    // during the day
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {	
       return openSlots;	
     }	
@@ -67,7 +71,7 @@ public final class FindMeetingQuery {
       }	
     }	
 
-
+    // Fills out the rest of the day if it's free
     if(startTime + request.getDuration() < TimeRange.END_OF_DAY) {	
       openSlots.add(TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));	
     }	
@@ -75,6 +79,7 @@ public final class FindMeetingQuery {
     return openSlots;	
   }	
 
+  // Returns false if not a single attendee is attending the event, returns true otherwise
   private boolean anyoneAttending(Collection<String> attendees, Event event) {	
     for (String attendee : attendees) {	
       if(isAttending(attendee, event)) {	
@@ -83,6 +88,8 @@ public final class FindMeetingQuery {
     }	
     return false;	
   }	
+
+  // Returns true if the attendee is attending the event, returns false if not
   private boolean isAttending(String attendee, Event event) {	
     return event.getAttendees().contains(attendee);	
   }
